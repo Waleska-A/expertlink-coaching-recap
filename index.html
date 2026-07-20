@@ -1,0 +1,1558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ExpertLink Coaching Session Recap</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Arial, sans-serif; background: #f0f4f8; padding: 30px 16px; }
+
+#toolbar {
+  max-width: 700px; margin: 0 auto 16px auto;
+  display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
+}
+#toolbar button {
+  background: #1E4E79; color: #fff; border: none;
+  padding: 9px 18px; font-size: 14px; font-family: Arial, sans-serif;
+  cursor: pointer; font-weight: bold;
+}
+#toolbar button:hover { background: #2E75B6; }
+#toolbar .sec {
+  background: #fff; color: #1E4E79; border: 2px solid #1E4E79;
+}
+#toolbar .sec:hover { background: #EBF3FB; }
+#toolbar .hint { font-size: 12px; color: #666; line-height: 1.4; }
+
+#wrap {
+  max-width: 700px; margin: 0 auto; background: #fff;
+  border: 1px solid #dde3ea;
+}
+
+/* header */
+.doc-hdr {
+  background: #fff; border-bottom: 3px solid #2E75B6;
+  padding: 16px 28px; display: flex; justify-content: space-between; align-items: center;
+}
+.doc-hdr img { height: 48px; width: auto; }
+.doc-hdr span { font-size: 12px; color: #888; font-style: italic; }
+
+/* banner */
+.banner {
+  background: #1E4E79; padding: 24px 40px; text-align: center; margin: 0 -1px;
+}
+.banner h1 { color: #fff; font-size: 20px; font-weight: bold; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+.banner p { color: #BDD7EE; font-size: 13px; font-style: italic; }
+
+/* content */
+.content { padding: 28px; }
+
+.sec-title {
+  font-size: 13px; font-weight: bold; color: #1E4E79;
+  text-transform: uppercase; letter-spacing: 0.5px;
+  border-bottom: 3px solid #2E75B6; padding-bottom: 6px;
+  margin-bottom: 14px; margin-top: 28px;
+}
+.sec-title:first-child { margin-top: 0; }
+
+/* session details */
+.details-row { display: flex; gap: 12px; align-items: center; margin-bottom: 20px; }
+
+.photo-box {
+  width: 150px; min-width: 150px; min-height: 155px;
+  border: 2px dashed #2E75B6; background: #F5F7FA;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  cursor: pointer; padding: 10px 8px 8px; text-align: center; flex-shrink: 0; overflow: visible;
+}
+.photo-box:hover { background: #EBF3FB; }
+.photo-box img { height: 110px; width: 110px; border-radius: 50%; border: 3px solid #2E75B6; object-fit: cover; display: block; margin: 0 auto 6px; }
+.photo-box .ph-icon { font-size: 24px; margin-bottom: 4px; }
+.photo-box .ph-label { font-size: 10px; font-weight: bold; color: #1E4E79; line-height: 1.4; }
+.photo-box .ph-remove { font-size: 10px; color: #e74c3c; cursor: pointer; text-decoration: underline; }
+
+.details-table { flex: 1; border-collapse: collapse; width: 100%; }
+.details-table td { border: 1px solid #ccc; padding: 7px 10px; font-size: 13px; vertical-align: middle; }
+.details-table td.lbl { background: #D6E4F0; color: #1E4E79; font-weight: bold; width: 38%; }
+.details-table td.val { background: #fff; color: #333; }
+.details-table td.val span { outline: none; display: block; width: 100%; }
+.details-table td.val span:focus { background: #FAFCFF; }
+
+/* topic toggles */
+.topics-hint { font-size: 12px; color: #777; font-style: italic; margin-bottom: 10px; }
+.t-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 12px; border: 1px solid #ccc; margin-bottom: 5px;
+  cursor: pointer; background: #fff; user-select: none;
+}
+.t-row:hover { background: #f0f6fb; }
+.t-chk {
+  width: 20px; height: 20px; border: 2px solid #2E75B6;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; background: #fff; font-size: 13px; color: #1E4E79; font-weight: bold;
+}
+.t-lbl { font-size: 13px; font-weight: bold; color: #1E4E79; }
+
+/* topic modules */
+.mod { margin-bottom: 16px; }
+.mod-hdr {
+  padding: 9px 14px; font-size: 12px; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+.mod-hdr.faded { background: #EAEAEA; color: #AFAFAF; border: 1px solid #DDD; border-bottom: none; }
+.mod-hdr.active { background: #1E4E79; color: #fff; border: 1px solid #1E4E79; border-bottom: none; }
+.mod-body { border-top: none; padding: 12px 14px; }
+.mod-body.faded { background: #F8F8F8; border: 1px solid #DDD; }
+.mod-body.active { background: #fff; border: 1px solid #2E75B6; }
+.mod-lbl { font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 6px; }
+.mod-lbl.faded { color: #BBBBBB; }
+.mod-lbl.active { color: #1E4E79; }
+textarea.recap {
+  width: 100%; min-height: 75px; padding: 8px 10px;
+  font-size: 13px; font-family: Arial, sans-serif;
+  resize: vertical; line-height: 1.5; border: 1px solid #DDD; background: #F8F8F8; color: #C9C9C9;
+}
+textarea.recap.active { border-color: #2E75B6; background: #fff; color: #333; pointer-events: auto; }
+textarea.recap.faded { pointer-events: none; }
+textarea.recap::placeholder { color: #C9C9C9; font-style: italic; }
+textarea.recap.active::placeholder { color: #aaa; }
+
+/* goals */
+.notes-lbl { font-size: 12px; font-weight: bold; color: #444; margin-top: 14px; margin-bottom: 4px; }
+textarea.notes {
+  width: 100%; min-height: 75px; padding: 8px 10px;
+  font-size: 13px; font-family: Arial, sans-serif;
+  border: 1px solid #ccc; background: #F5F7FA; color: #333;
+  resize: vertical; line-height: 1.5;
+}
+textarea.notes::placeholder { color: #aaa; font-style: italic; }
+
+/* footer */
+.doc-footer {
+  background: #F5F7FA; border-top: 1px solid #dde3ea;
+  padding: 14px 28px; text-align: center;
+}
+.doc-footer p { font-size: 12px; color: #555; line-height: 1.8; }
+.doc-footer strong { color: #1E4E79; }
+
+@media print {
+  body { background: #fff; padding: 0; }
+  #toolbar { display: none !important; }
+  #wrap { border: none; max-width: 100%; }
+  #topics-section { display: none !important; }
+  .mod.faded-mod { display: none !important; }
+  textarea { border: 1px solid #ccc !important; color: #333 !important; background: #fff !important; }
+  .photo-box { border: 1px solid #ccc !important; }
+  .mod-hdr.active { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .banner { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .doc-hdr { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+</style>
+</head>
+<body>
+
+<div id="toolbar">
+  <button onclick="openInOutlook()">📧 Open in Outlook</button>
+  <button onclick="resetForm()" class="sec" style="border-color:#e74c3c; color:#e74c3c;">🔄 Reset Form</button>
+  <button class="sec" onclick="window.print()">🖨️ Save as PDF</button>
+  <span class="hint">Open in Outlook → double-click the .eml file → Forward to advisor (links stay clickable). Save as PDF to save to advisor's file.</span>
+</div>
+
+<div id="wrap">
+
+  <!-- HEADER -->
+  <div class="doc-hdr" style="justify-content:center;">
+    <img src="https://i.imgur.com/udDM23H.png" alt="ExpertLink" style="width:280px; height:auto;">
+  </div>
+
+  <!-- BANNER -->
+  <div class="banner">
+    <h1>Coaching Session Recap</h1>
+    <p>Recap &amp; Action Summary</p>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <div class="sec-title">Session Details</div>
+
+    <input type="file" id="photo-upload" accept="image/*" style="display:none"
+      onchange="(function(i){
+        if(!i.files||!i.files[0])return;
+        var r=new FileReader();
+        r.onload=function(e){
+          document.getElementById('adv-photo').src=e.target.result;
+          document.getElementById('photo-preview').style.display='block';
+          document.getElementById('photo-placeholder').style.display='none';
+          var b=document.querySelector('.photo-box');
+          if(b){b.style.border='none';b.style.background='transparent';b.style.padding='0';}
+        };
+        r.readAsDataURL(i.files[0]);
+        i.value='';
+      })(this)">
+
+    <div style="border:2px solid #2E75B6; border-radius:4px; padding:14px; background:#F8FBFE; margin-bottom:20px;">
+    <div class="details-row" style="margin-bottom:0;">
+      <div class="photo-box" onclick="document.getElementById('photo-upload').click()">
+        <div id="photo-preview" style="display:none">
+          <img id="adv-photo" src="" alt="Advisor">
+          <div class="ph-remove"
+               onclick="event.stopPropagation();
+                        document.getElementById('adv-photo').src='';
+                        document.getElementById('photo-preview').style.display='none';
+                        document.getElementById('photo-placeholder').style.display='block';">
+            Remove
+          </div>
+        </div>
+        <div id="photo-placeholder">
+          <div class="ph-icon">📷</div>
+          <div class="ph-label">Click or drag<br>photo here</div>
+        </div>
+      </div>
+      <table class="details-table">
+        <tr>
+          <td class="lbl">Coach</td>
+          <td class="val" style="padding:4px 10px;">
+            <select id="f-coach"
+                    style="width:100%; border:none; outline:none; font-family:Arial,sans-serif;
+                           font-size:13px; color:#000; font-weight:bold; background:transparent; cursor:pointer;">
+              <option value="Karina">Karina</option>
+              <option value="Waleska">Waleska</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td class="lbl">Advisor Name</td>
+          <td class="val"><span contenteditable="true" id="f-advisor-name" data-ph="Advisor Full Name" style="font-weight:bold; color:#000; display:block; width:100%; outline:none;"></span></td>
+        </tr>
+        <tr>
+          <td class="lbl">Advisor Ext.</td>
+          <td class="val"><span contenteditable="true" id="f-advisor" data-ph="Extension #" style="font-weight:bold; color:#000; display:block; width:100%; outline:none;"></span></td>
+        </tr>
+        <tr>
+          <td class="lbl">Session Date</td>
+          <td class="val" style="padding:4px 10px;">
+            <input type="date" id="f-date-picker"
+                   onchange="formatDate(this.value)"
+                   style="width:100%; border:none; outline:none; font-family:Arial,sans-serif;
+                          font-size:13px; color:#000 !important; font-weight:bold !important; background:transparent; cursor:pointer; padding:3px 0;">
+            <span id="f-date" style="display:none;"></span>
+          </td>
+        </tr>
+      </table>
+    </div>
+    </div>
+
+    <!-- TOPICS -->
+    <div id="topics-section">
+      <div class="sec-title">Topics Covered This Session</div>
+      <p class="topics-hint">Click a topic to activate it — the recap box below will unlock so you can fill it in.</p>
+      <div id="topic-toggles">
+        <div class="t-row" onclick="toggle('amp')"><div class="t-chk" id="chk-amp"></div><span class="t-lbl">Advisor Managed Promotions (AMP)</span></div>
+        <div class="t-row" onclick="toggle('communications')"><div class="t-chk" id="chk-communications"></div><span class="t-lbl">Customer Communications</span></div>
+        <div class="t-row" onclick="toggle('features')"><div class="t-chk" id="chk-features"></div><span class="t-lbl">Features</span></div>
+        <div class="t-row" onclick="toggle('missed')"><div class="t-chk" id="chk-missed"></div><span class="t-lbl">Missed Connections</span></div>
+        <div class="t-row" onclick="toggle('retention')"><div class="t-chk" id="chk-retention"></div><span class="t-lbl">New Member / Existing Member Retention</span></div>
+        <div class="t-row" onclick="toggle('profile')"><div class="t-chk" id="chk-profile"></div><span class="t-lbl">Profile / Bio Page</span></div>
+        <div class="t-row" onclick="toggle('schedule')"><div class="t-chk" id="chk-schedule"></div><span class="t-lbl">Schedule</span></div>
+        <div class="t-row" onclick="toggle('ratings')"><div class="t-chk" id="chk-ratings"></div><span class="t-lbl">Star Ratings / Reviews</span></div>
+        <div class="t-row" id="row-custom" onclick="toggleCustom()" style="align-items:center;">
+          <div class="t-chk" id="chk-custom"></div>
+          <input type="text" id="custom-topic-title" placeholder="+ Custom topic (type title here)"
+                 onclick="event.stopPropagation()"
+                 oninput="updateCustomTitle(this.value)"
+                 style="border:none; outline:none; font-family:Arial,sans-serif; font-size:13px;
+                        font-weight:bold; color:#1E4E79; background:transparent; flex:1; cursor:text;">
+        </div>
+      </div>
+    </div>
+
+    <!-- MODULES -->
+    <div class="sec-title" style="margin-top:28px;">Recap &amp; Recommendations</div>
+
+
+    <div class="mod faded-mod" id="mod-amp">
+      <div class="mod-hdr faded" id="hdr-amp" style="display:flex; justify-content:space-between; align-items:center;"><span id="hdr-text-amp">Advisor Managed Promotions (AMP)</span><span onclick="openTipsModal('amp')" style="font-size:11px; font-weight:normal; text-transform:none; letter-spacing:0; cursor:pointer; color:#aaa; text-decoration:underline; white-space:nowrap; padding-left:8px;">Manage tips</span></div>
+      <div class="mod-body faded" id="body-amp">
+        <div class="mod-lbl faded" id="lbl-amp">Recap &amp; Recommendations</div>
+        <div style="margin-bottom:7px;">
+          <select id="select-amp" onchange="insertSnippet('recap-amp', this.value); this.selectedIndex=0;"
+                  style="width:100%; font-family:Arial,sans-serif; font-size:12px; color:#1E4E79;
+                         border:1px solid #2E75B6; background:#EBF3FB; padding:5px 8px; cursor:pointer;">
+            <option value="">+ Add a tip...</option>
+          </select>
+        </div>
+        <div style="margin-bottom:4px;"><button onclick="addBullet('recap-amp')" style="background:#EBF3FB; border:1px solid #2E75B6; color:#1E4E79; font-size:11px; font-family:Arial,sans-serif; padding:3px 10px; cursor:pointer; border-radius:3px;">&#8226; Add bullet</button></div>
+        <div id="guides-section-amp" style="margin-top:10px; margin-bottom:6px;">
+          <div style="display:flex; align-items:center; gap:6px; margin-bottom:5px;">
+            <span style="font-size:11px; font-weight:bold; color:#BBBBBB; text-transform:uppercase; letter-spacing:0.4px; font-family:Arial,sans-serif;" id="guides-lbl-amp">Guides</span>
+            <span onclick="openGuidesModal('amp')" style="font-size:11px; color:#2E75B6; cursor:pointer; text-decoration:underline; font-family:Arial,sans-serif;">Manage guides</span>
+          </div>
+          <select id="guide-select-amp" onchange="addGuide('amp', this.value, this.options[this.selectedIndex].text); this.selectedIndex=0;"
+                  style="width:100%; font-family:Arial,sans-serif; font-size:12px; color:#1E4E79;
+                         border:1px solid #2E75B6; background:#EBF3FB; padding:5px 8px; cursor:pointer; margin-bottom:6px;">
+            <option value="">+ Add a guide link...</option>
+          </select>
+          <div id="selected-guides-amp" style="display:flex; flex-direction:column; gap:4px;"></div>
+        </div>
+        <textarea class="recap faded" id="recap-amp" placeholder="Summary of current/planned promotions, budget, targeting, and performance tips…"></textarea>
+      </div>
+    </div>
+
+    <div class="mod faded-mod" id="mod-communications">
+      <div class="mod-hdr faded" id="hdr-communications" style="display:flex; justify-content:space-between; align-items:center;"><span id="hdr-text-communications">Customer Communications</span><span onclick="openTipsModal('communications')" style="font-size:11px; font-weight:normal; text-transform:none; letter-spacing:0; cursor:pointer; color:#aaa; text-decoration:underline; white-space:nowrap; padding-left:8px;">Manage tips</span></div>
+      <div class="mod-body faded" id="body-communications">
+        <div class="mod-lbl faded" id="lbl-communications">Recap &amp; Recommendations</div>
+        <div style="margin-bottom:7px;">
+          <select id="select-communications" onchange="insertSnippet('recap-communications', this.value); this.selectedIndex=0;"
+                  style="width:100%; font-family:Arial,sans-serif; font-size:12px; color:#1E4E79;
+                         border:1px solid #2E75B6; background:#EBF3FB; padding:5px 8px; cursor:pointer; margin-bottom:6px;">
+            <option value="">+ Add a tip...</option>
+          </select>
+        </div>
+        <div id="guides-section-communications" style="margin-top:10px; margin-bottom:6px;">
+          <div style="display:flex; align-items:center; gap:6px; margin-bottom:5px;">
+            <span style="font-size:11px; font-weight:bold; color:#BBBBBB; text-transform:uppercase; letter-spacing:0.4px; font-family:Arial,sans-serif;" id="guides-lbl-communications">Guides</span>
+            <span onclick="openGuidesModal('communications')" style="font-size:11px; color:#2E75B6; cursor:pointer; text-decoration:underline; font-family:Arial,sans-serif;">Manage guides</span>
+          </div>
+          <select id="guide-select-communications" onchange="addGuide('communications', this.value, this.options[this.selectedIndex].text); this.selectedIndex=0;"
+                  style="width:100%; font-family:Arial,sans-serif; font-size:12px; color:#1E4E79;
+                         border:1px solid #2E75B6; background:#EBF3FB; padding:5px 8px; cursor:pointer; margin-bottom:6px;">
+            <option value="">+ Add a guide link...</option>
+          </select>
+          <div id="selected-guides-communications" style="display:flex; flex-direction:column; gap:4px;"></div>
+        </div>
+        <div style="margin-bottom:4px;"><button onclick="addBullet('recap-communications')" style="background:#EBF3FB; border:1px solid #2E75B6; color:#1E4E79; font-size:11px; font-family:Arial,sans-serif; padding:3px 10px; cursor:pointer; border-radius:3px;">&#8226; Add bullet</button></div>
+        <textarea class="recap faded" id="recap-communications" placeholder="Summary of member communication strategies, response practices, and tips discussed…"></textarea>
+      </div>
+    </div>
+
+    <div class="mod faded-mod" id="mod-features">
+      <div class="mod-hdr faded" id="hdr-features" style="display:flex; justify-content:space-between; align-items:center;"><span id="hdr-text-features">Features</span><span onclick="openTipsModal('features')" style="font-size:11px; font-weight:normal; text-transform:none; letter-spacing:0; cursor:pointer; color:#aaa; text-decoration:underline; white-space:nowrap; padding-left:8px;">Manage tips</span></div>
+      <div class="mod-body faded" id="body-features">
+        <div class="mod-lbl faded" id="lbl-features">Recap &amp; Recommendations</div>
+        <div style="margin-bottom:7px;">
+          <select id="select-features" onchange="insertSnippet('recap-features', this.value); this.selectedIndex=0;"
+                  style="width:100%; font-family:Arial,sans-serif; font-size:12px; color:#1E4E79;
+                         border:1px solid #2E75B6; background:#EBF3FB; padding:5px 8px; cursor:pointer;">
+            <option value="">+ Add a tip...</option>
+          </select>
+        </div>
+        <div style="margin-bottom:4px;"><button onclick="addBullet('recap-features')" style="background:#EBF3FB; border:1px solid #2E75B6; color:#1E4E79; font-size:11px; font-family:Arial,sans-serif; padding:3px 10px; cursor:pointer; border-radius:3px;">&#8226; Add bullet</button></div>
+        <div id="guides-section-features" style="margin-top:10px; margin-bottom:6px;">
+          <div style="display:flex; align-items:center; gap:6px; margin-bottom:5px;">
+            <span style="font-size:11px; font-weight:bold; color:#BBBBBB; text-transform:uppercase; letter-spacing:0.4px; font-family:Arial,sans-serif;" id="guides-lbl-features">Guides</span>
+            <span onclick="openGuidesModal('features')" style="font-size:11px; color:#2E75B6; cursor:pointer; text-decoration:underline; font-family:Arial,sans-serif;">Manage guides</span>
+          </div>
+          <select id="guide-select-features" onchange="addGuide('features', this.value, this.options[this.selectedIndex].text); this.selectedIndex=0;"
+                  style="width:100%; font-family:Arial,sans-serif; font-size:12px; color:#1E4E79;
+                         border:1px solid #2E75B6; background:#EBF3FB; padding:5px 8px; cursor:pointer; margin-bottom:6px;">
+            <option value="">+ Add a guide link...</option>
+          </select>
+          <div id="selected-guides-features" style="display:flex; flex-direction:column; gap:4px;"></div>
+        </div>
+        <textarea class="recap faded" id="recap-features" placeholder="Summary of platform features discussed, adoption status, and recommended next steps…"></textarea>
+      </div>
+    </div>
+
+    <div class="mod faded-mod" id="mod-missed">
+      <div class="mod-hdr faded" id="hdr-missed" style="display:flex; justify-content:space-between; align-items:center;"><span id="hdr-text-missed">Missed Connections</span><span onclick="openTipsModal('missed')" style="font-size:11px; font-weight:normal; text-transform:none; letter-spacing:0; cursor:pointer; color:#aaa; text-decoration:underline; white-space:nowrap; padding-left:8px;">Manage tips</span></div>
+      <div class="mod-body faded" id="body-missed">
+        <div class="mod-lbl faded" id="lbl-missed">Recap &amp; Recommendations</div>
+        <div style="margin-bottom:7px;">
+          <select id="select-missed" onchange="insertSnippet('recap-missed', this.value); this.selectedIndex=0;"
+                  style="width:100%; font-family:Arial,sans-serif; font-size:12px; color:#1E4E79;
+                         border:1px solid #2E75B6; background:#EBF3FB; padding:5px 8px; cursor:pointer;">
+            <option value="">+ Add a tip...</option>
+          </select>
+        </div>
+        <div style="margin-bottom:4px;"><button onclick="addBullet('recap-missed')" style="background:#EBF3FB; border:1px solid #2E75B6; color:#1E4E79; font-size:11px; font-family:Arial,sans-serif; padding:3px 10px; cursor:pointer; border-radius:3px;">&#8226; Add bullet</button></div>
+        <div id="guides-section-missed" style="margin-top:10px; margin-bottom:6px;">
+          <div style="display:flex; align-items:center; gap:6px; margin-bottom:5px;">
+            <span style="font-size:11px; font-weight:bold; color:#BBBBBB; text-transform:uppercase; letter-spacing:0.4px; font-family:Arial,sans-serif;" id="guides-lbl-missed">Guides</span>
+            <span onclick="openGuidesModal('missed')" style="font-size:11px; color:#2E75B6; cursor:pointer; text-decoration:underline; font-family:Arial,sans-serif;">Manage guides</span>
+          </div>
+          <select id="guide-select-missed" onchange="addGuide('missed', this.value, this.options[this.selectedIndex].text); this.selectedIndex=0;"
+                  style="width:100%; font-family:Arial,sans-serif; font-size:12px; color:#1E4E79;
+                         border:1px solid #2E75B6; background:#EBF3FB; padding:5px 8px; cursor:pointer; margin-bottom:6px;">
+            <option value="">+ Add a guide link...</option>
+          </select>
+          <div id="selected-guides-missed" style="display:flex; flex-direction:column; gap:4px;"></div>
+        </div>
+        <textarea class="recap faded" id="recap-missed" placeholder="Summary of missed/no-show appointments, root causes, and recommended next steps…"></textarea>
+      </div>
+    </div>
+
+    <div class="mod faded-mod" id="mod-retention">
+      <div class="mod-hdr faded" id="hdr-retention" style="display:flex; justify-content:space-between; align-items:center;"><span id="hdr-text-retention">New Member / Existing Member Retention</span><span onclick="openTipsModal('retention')" style="font-size:11px; font-weight:normal; text-transform:none; letter-spacing:0; cursor:pointer; color:#aaa; text-decoration:underline; white-space:nowrap; padding-left:8px;">Manage tips</span></div>
+      <div class="mod-body faded" id="body-retention">
+        <div class="mod-lbl faded" id="lbl-retention">Recap &amp; Recommendations</div>
+        <div style="margin-bottom:7px;">
+          <select id="select-retention" onchange="insertSnippet('recap-retention', this.value); this.selectedIndex=0;"
+                  style="width:100%; font-family:Arial,sans-serif; font-size:12px; color:#1E4E79;
+                         border:1px solid #2E75B6; background:#EBF3FB; padding:5px 8px; cursor:pointer;">
+            <option value="">+ Add a tip...</option>
+          </select>
+        </div>
+        <div style="margin-bottom:4px;"><button onclick="addBullet('recap-retention')" style="background:#EBF3FB; border:1px solid #2E75B6; color:#1E4E79; font-size:11px; font-family:Arial,sans-serif; padding:3px 10px; cursor:pointer; border-radius:3px;">&#8226; Add bullet</button></div>
+        <div id="guides-section-retention" style="margin-top:10px; margin-bottom:6px;">
+          <div style="display:flex; align-items:center; gap:6px; margin-bottom:5px;">
+            <span style="font-size:11px; font-weight:bold; color:#BBBBBB; text-transform:uppercase; letter-spacing:0.4px; font-family:Arial,sans-serif;" id="guides-lbl-retention">Guides</span>
+            <span onclick="openGuidesModal('retention')" style="font-size:11px; color:#2E75B6; cursor:pointer; text-decoration:underline; font-family:Arial,sans-serif;">Manage guides</span>
+          </div>
+          <select id="guide-select-retention" onchange="addGuide('retention', this.value, this.options[this.selectedIndex].text); this.selectedIndex=0;"
+                  style="width:100%; font-family:Arial,sans-serif; font-size:12px; color:#1E4E79;
+                         border:1px solid #2E75B6; background:#EBF3FB; padding:5px 8px; cursor:pointer; margin-bottom:6px;">
+            <option value="">+ Add a guide link...</option>
+          </select>
+          <div id="selected-guides-retention" style="display:flex; flex-direction:column; gap:4px;"></div>
+        </div>
+        <textarea class="recap faded" id="recap-retention" placeholder="Summary of onboarding experience, engagement touchpoints, and retention tips discussed…"></textarea>
+      </div>
+    </div>
+
+    <div class="mod faded-mod" id="mod-profile">
+      <div class="mod-hdr faded" id="hdr-profile" style="display:flex; justify-content:space-between; align-items:center;"><span id="hdr-text-profile">Profile / Bio Page</span><span onclick="openTipsModal('profile')" style="font-size:11px; font-weight:normal; text-transform:none; letter-spacing:0; cursor:pointer; color:#aaa; text-decoration:underline; white-space:nowrap; padding-left:8px;">Manage tips</span></div>
+      <div class="mod-body faded" id="body-profile">
+        <div class="mod-lbl faded" id="lbl-profile">Recap &amp; Recommendations</div>
+        <div style="margin-bottom:7px;">
+          <select id="select-profile" onchange="insertSnippet('recap-profile', this.value); this.selectedIndex=0;"
+                  style="width:100%; font-family:Arial,sans-serif; font-size:12px; color:#1E4E79;
+                         border:1px solid #2E75B6; background:#EBF3FB; padding:5px 8px; cursor:pointer;">
+            <option value="">+ Add a tip...</option>
+          </select>
+        </div>
+        <div style="margin-bottom:4px;"><button onclick="addBullet('recap-profile')" style="background:#EBF3FB; border:1px solid #2E75B6; color:#1E4E79; font-size:11px; font-family:Arial,sans-serif; padding:3px 10px; cursor:pointer; border-radius:3px;">&#8226; Add bullet</button></div>
+        <div id="guides-section-profile" style="margin-top:10px; margin-bottom:6px;">
+          <div style="display:flex; align-items:center; gap:6px; margin-bottom:5px;">
+            <span style="font-size:11px; font-weight:bold; color:#BBBBBB; text-transform:uppercase; letter-spacing:0.4px; font-family:Arial,sans-serif;" id="guides-lbl-profile">Guides</span>
+            <span onclick="openGuidesModal('profile')" style="font-size:11px; color:#2E75B6; cursor:pointer; text-decoration:underline; font-family:Arial,sans-serif;">Manage guides</span>
+          </div>
+          <select id="guide-select-profile" onchange="addGuide('profile', this.value, this.options[this.selectedIndex].text); this.selectedIndex=0;"
+                  style="width:100%; font-family:Arial,sans-serif; font-size:12px; color:#1E4E79;
+                         border:1px solid #2E75B6; background:#EBF3FB; padding:5px 8px; cursor:pointer; margin-bottom:6px;">
+            <option value="">+ Add a guide link...</option>
+          </select>
+          <div id="selected-guides-profile" style="display:flex; flex-direction:column; gap:4px;"></div>
+        </div>
+        <textarea class="recap faded" id="recap-profile" placeholder="Summary of profile completeness, photo quality, bio messaging, and positioning tips…"></textarea>
+      </div>
+    </div>
+
+    <div class="mod faded-mod" id="mod-schedule">
+      <div class="mod-hdr faded" id="hdr-schedule" style="display:flex; justify-content:space-between; align-items:center;"><span id="hdr-text-schedule">Schedule</span><span onclick="openTipsModal('schedule')" style="font-size:11px; font-weight:normal; text-transform:none; letter-spacing:0; cursor:pointer; color:#aaa; text-decoration:underline; white-space:nowrap; padding-left:8px;">Manage tips</span></div>
+      <div class="mod-body faded" id="body-schedule">
+        <div class="mod-lbl faded" id="lbl-schedule">Recap &amp; Recommendations</div>
+        <div style="margin-bottom:7px;">
+          <select id="select-schedule" onchange="insertSnippet('recap-schedule', this.value); this.selectedIndex=0;"
+                  style="width:100%; font-family:Arial,sans-serif; font-size:12px; color:#1E4E79;
+                         border:1px solid #2E75B6; background:#EBF3FB; padding:5px 8px; cursor:pointer;">
+            <option value="">+ Add a tip...</option>
+          </select>
+        </div>
+        <div style="margin-bottom:4px;"><button onclick="addBullet('recap-schedule')" style="background:#EBF3FB; border:1px solid #2E75B6; color:#1E4E79; font-size:11px; font-family:Arial,sans-serif; padding:3px 10px; cursor:pointer; border-radius:3px;">&#8226; Add bullet</button></div>
+        <div id="guides-section-schedule" style="margin-top:10px; margin-bottom:6px;">
+          <div style="display:flex; align-items:center; gap:6px; margin-bottom:5px;">
+            <span style="font-size:11px; font-weight:bold; color:#BBBBBB; text-transform:uppercase; letter-spacing:0.4px; font-family:Arial,sans-serif;" id="guides-lbl-schedule">Guides</span>
+            <span onclick="openGuidesModal('schedule')" style="font-size:11px; color:#2E75B6; cursor:pointer; text-decoration:underline; font-family:Arial,sans-serif;">Manage guides</span>
+          </div>
+          <select id="guide-select-schedule" onchange="addGuide('schedule', this.value, this.options[this.selectedIndex].text); this.selectedIndex=0;"
+                  style="width:100%; font-family:Arial,sans-serif; font-size:12px; color:#1E4E79;
+                         border:1px solid #2E75B6; background:#EBF3FB; padding:5px 8px; cursor:pointer; margin-bottom:6px;">
+            <option value="">+ Add a guide link...</option>
+          </select>
+          <div id="selected-guides-schedule" style="display:flex; flex-direction:column; gap:4px;"></div>
+        </div>
+        <textarea class="recap faded" id="recap-schedule" placeholder="Summary of availability, calendar setup, booking windows, and tips discussed…"></textarea>
+      </div>
+    </div>
+
+    <div class="mod faded-mod" id="mod-ratings">
+      <div class="mod-hdr faded" id="hdr-ratings" style="display:flex; justify-content:space-between; align-items:center;"><span id="hdr-text-ratings">Star Ratings / Reviews</span><span onclick="openTipsModal('ratings')" style="font-size:11px; font-weight:normal; text-transform:none; letter-spacing:0; cursor:pointer; color:#aaa; text-decoration:underline; white-space:nowrap; padding-left:8px;">Manage tips</span></div>
+      <div class="mod-body faded" id="body-ratings">
+        <div class="mod-lbl faded" id="lbl-ratings">Recap &amp; Recommendations</div>
+        <div style="margin-bottom:7px;">
+          <select id="select-ratings" onchange="insertSnippet('recap-ratings', this.value); this.selectedIndex=0;"
+                  style="width:100%; font-family:Arial,sans-serif; font-size:12px; color:#1E4E79;
+                         border:1px solid #2E75B6; background:#EBF3FB; padding:5px 8px; cursor:pointer;">
+            <option value="">+ Add a tip...</option>
+          </select>
+        </div>
+        <div style="margin-bottom:4px;"><button onclick="addBullet('recap-ratings')" style="background:#EBF3FB; border:1px solid #2E75B6; color:#1E4E79; font-size:11px; font-family:Arial,sans-serif; padding:3px 10px; cursor:pointer; border-radius:3px;">&#8226; Add bullet</button></div>
+        <div id="guides-section-ratings" style="margin-top:10px; margin-bottom:6px;">
+          <div style="display:flex; align-items:center; gap:6px; margin-bottom:5px;">
+            <span style="font-size:11px; font-weight:bold; color:#BBBBBB; text-transform:uppercase; letter-spacing:0.4px; font-family:Arial,sans-serif;" id="guides-lbl-ratings">Guides</span>
+            <span onclick="openGuidesModal('ratings')" style="font-size:11px; color:#2E75B6; cursor:pointer; text-decoration:underline; font-family:Arial,sans-serif;">Manage guides</span>
+          </div>
+          <select id="guide-select-ratings" onchange="addGuide('ratings', this.value, this.options[this.selectedIndex].text); this.selectedIndex=0;"
+                  style="width:100%; font-family:Arial,sans-serif; font-size:12px; color:#1E4E79;
+                         border:1px solid #2E75B6; background:#EBF3FB; padding:5px 8px; cursor:pointer; margin-bottom:6px;">
+            <option value="">+ Add a guide link...</option>
+          </select>
+          <div id="selected-guides-ratings" style="display:flex; flex-direction:column; gap:4px;"></div>
+        </div>
+        <textarea class="recap faded" id="recap-ratings" placeholder="Summary of recent reviews, rating trends, and recommended response strategy…"></textarea>
+      </div>
+    </div>
+
+    <div class="mod faded-mod" id="mod-custom">
+      <div class="mod-hdr faded" id="hdr-custom" style="display:flex; justify-content:space-between; align-items:center;">
+        <span id="hdr-text-custom">Custom Topic</span>
+        <span onclick="openTipsModal('custom')" style="font-size:11px; font-weight:normal; text-transform:none; letter-spacing:0; cursor:pointer; color:#aaa; text-decoration:underline; white-space:nowrap; padding-left:8px;">Manage tips</span>
+      </div>
+      <div class="mod-body faded" id="body-custom">
+        <div class="mod-lbl faded" id="lbl-custom">Recap &amp; Recommendations</div>
+        <div style="margin-bottom:7px;">
+          <select id="select-custom" onchange="insertSnippet('recap-custom', this.value); this.selectedIndex=0;"
+                  style="width:100%; font-family:Arial,sans-serif; font-size:12px; color:#1E4E79;
+                         border:1px solid #2E75B6; background:#EBF3FB; padding:5px 8px; cursor:pointer; margin-bottom:6px;">
+            <option value="">+ Add a tip...</option>
+          </select>
+        </div>
+        <div id="guides-section-custom" style="margin-top:10px; margin-bottom:6px;">
+          <div style="display:flex; align-items:center; gap:6px; margin-bottom:5px;">
+            <span style="font-size:11px; font-weight:bold; color:#BBBBBB; text-transform:uppercase; letter-spacing:0.4px; font-family:Arial,sans-serif;">Guides</span>
+            <span onclick="openGuidesModal('custom')" style="font-size:11px; color:#2E75B6; cursor:pointer; text-decoration:underline; font-family:Arial,sans-serif;">Manage guides</span>
+          </div>
+          <select id="guide-select-custom" onchange="addGuide('custom', this.value, this.options[this.selectedIndex].text); this.selectedIndex=0;"
+                  style="width:100%; font-family:Arial,sans-serif; font-size:12px; color:#1E4E79;
+                         border:1px solid #2E75B6; background:#EBF3FB; padding:5px 8px; cursor:pointer; margin-bottom:6px;">
+            <option value="">+ Add a guide link...</option>
+          </select>
+          <div id="selected-guides-custom" style="display:flex; flex-direction:column; gap:4px;"></div>
+        </div>
+        <div style="margin-bottom:4px;"><button onclick="addBullet('recap-custom')" style="background:#EBF3FB; border:1px solid #2E75B6; color:#1E4E79; font-size:11px; font-family:Arial,sans-serif; padding:3px 10px; cursor:pointer; border-radius:3px;">&#8226; Add bullet</button></div>
+        <textarea class="recap faded" id="recap-custom" placeholder="Enter your recap and recommendations for this topic…"></textarea>
+      </div>
+    </div>
+
+    <!-- GOALS -->
+    <div class="sec-title">Goals</div>
+    <div class="notes-lbl">Goal(s) We&#39;re Working Toward</div>
+    <textarea class="notes" id="f-goals" placeholder="Restate the short- or long-term goal(s) keeping this session in context…"></textarea>
+
+  </div><!-- /content -->
+
+  <!-- FOOTER -->
+  <div class="doc-footer">
+    <p style="font-family:Arial,sans-serif; font-size:13px; color:#555; line-height:1.8;">
+      Thank you for your ongoing dedication to Psychic Source and our valued members.
+      Your commitment is greatly appreciated as we work together to provide exceptional experiences for every member.
+    </p>
+    <p style="font-family:Arial,sans-serif; font-size:13px; color:#ffffff;
+              font-weight:bold; line-height:1.7; margin-top:12px; padding:12px 16px;
+              background:#1E4E79; text-align:center;">
+      Should you have any questions or need further support, please feel free to email me at Karina@expert-link.com or submit a ticket through the Portal.<br>
+      Looking forward to our next session!
+    </p>
+  </div>
+
+
+</div><!-- /wrap -->
+
+<script>
+var TOPICS = ['amp','communications','features','missed','retention','profile','schedule','ratings','custom'];
+
+// Placeholder handling
+document.querySelectorAll('[contenteditable][data-ph]').forEach(function(el) {
+  var ph = el.getAttribute('data-ph');
+  el.innerHTML = '<span style="color:#aaa;font-style:italic;font-weight:normal;">' + ph + '</span>';
+  el.addEventListener('focus', function() {
+    if (el.querySelector('span')) el.innerHTML = '';
+  });
+  el.addEventListener('blur', function() {
+    if (!el.textContent.trim()) {
+      el.innerHTML = '<span style="color:#aaa;font-style:italic;font-weight:normal;">' + ph + '</span>';
+    }
+  });
+});
+
+// Topic toggle
+function toggle(key) {
+  var chk = document.getElementById('chk-' + key);
+  var mod = document.getElementById('mod-' + key);
+  var hdr = document.getElementById('hdr-' + key);
+  var body = document.getElementById('body-' + key);
+  var lbl = document.getElementById('lbl-' + key);
+  var recap = document.getElementById('recap-' + key);
+  var row = chk.parentElement;
+  var on = chk.textContent === '✓';
+
+  if (on) {
+    chk.textContent = '';
+    chk.style.background = '#fff';
+    chk.style.borderColor = '#2E75B6';
+    row.style.background = '#fff';
+    mod.classList.add('faded-mod');
+    hdr.className = 'mod-hdr faded';
+    body.className = 'mod-body faded';
+    lbl.className = 'mod-lbl faded';
+    recap.className = 'recap faded';
+  } else {
+    chk.textContent = '✓';
+    chk.style.background = '#1E4E79';
+    chk.style.borderColor = '#1E4E79';
+    chk.style.color = '#fff';
+    row.style.background = '#EBF3FB';
+    mod.classList.remove('faded-mod');
+    hdr.className = 'mod-hdr active';
+    body.className = 'mod-body active';
+    lbl.className = 'mod-lbl active';
+    recap.className = 'recap active';
+  }
+}
+
+// Drag and drop photo
+document.addEventListener('DOMContentLoaded', function() {
+  var box = document.querySelector('.photo-box');
+  if (!box) return;
+  box.addEventListener('dragover', function(e) { e.preventDefault(); box.style.background = '#EBF3FB'; });
+  box.addEventListener('dragleave', function() { box.style.background = '#F5F7FA'; });
+  box.addEventListener('drop', function(e) {
+    e.preventDefault(); box.style.background = '#F5F7FA';
+    var f = e.dataTransfer.files[0];
+    if (f && f.type.startsWith('image/')) {
+      var r = new FileReader();
+      r.onload = function(ev) {
+        document.getElementById('adv-photo').src = ev.target.result;
+        document.getElementById('photo-preview').style.display = 'block';
+        document.getElementById('photo-placeholder').style.display = 'none';
+        var b=document.querySelector('.photo-box');
+        if(b){b.style.border='none';b.style.background='transparent';b.style.padding='0';}
+      };
+      r.readAsDataURL(f);
+    }
+  });
+});
+
+// Ctrl+V paste
+document.addEventListener('paste', function(e) {
+  var items = e.clipboardData && e.clipboardData.items;
+  if (!items) return;
+  for (var i = 0; i < items.length; i++) {
+    if (items[i].type.startsWith('image/')) {
+      var f = items[i].getAsFile();
+      var r = new FileReader();
+      r.onload = function(ev) {
+        document.getElementById('adv-photo').src = ev.target.result;
+        document.getElementById('photo-preview').style.display = 'block';
+        document.getElementById('photo-placeholder').style.display = 'none';
+        var b=document.querySelector('.photo-box');
+        if(b){b.style.border='none';b.style.background='transparent';b.style.padding='0';}
+      };
+      r.readAsDataURL(f);
+      break;
+    }
+  }
+});
+
+// Copy for Outlook
+function openInOutlook() {
+  var B = '#1E4E79', M = '#2E75B6', L = '#D6E4F0';
+
+  function secTitle(text) {
+    return '<div style="font-family:Arial,sans-serif;font-size:13px;font-weight:bold;color:' + B + ';text-transform:uppercase;letter-spacing:0.5px;border-bottom:3px solid ' + M + ';padding-bottom:6px;margin-bottom:12px;margin-top:20px;">' + text + '</div>';
+  }
+
+  function getField(id) {
+    if (id === 'f-date') {
+      var picker = document.getElementById('f-date-picker');
+      return picker ? (picker.getAttribute('data-formatted') || '') : '';
+    }
+    if (id === 'f-coach') {
+      var sel = document.getElementById('f-coach');
+      return sel ? sel.value : 'Karina';
+    }
+    var el = document.getElementById(id);
+    if (!el) return '';
+    var s = el.querySelector('span');
+    if (s) return '';
+    return el.textContent.trim();
+  }
+
+  var advisor = getField('f-advisor');
+  var date = getField('f-date');
+  var goals = document.getElementById('f-goals').value.trim().replace(/\n/g, '<br>');
+  var logoSrc = document.querySelector('#wrap img').src;
+  var photoEl = document.getElementById('adv-photo');
+  var photoSrc = photoEl && photoEl.src && photoEl.src.startsWith('data:') ? photoEl.src : '';
+
+  var detailRows =
+    '<tr>' +
+      '<td width="38%" style="border:1px solid #ccc;padding:7px 10px;background:' + L + ';color:' + B + ';font-family:Arial,sans-serif;font-size:13px;font-weight:bold;">Coach</td>' +
+      '<td style="border:1px solid #ccc;padding:7px 10px;background:#fff;font-family:Arial,sans-serif;font-size:13px;color:#333;">Karina</td>' +
+    '</tr>' +
+    '<tr>' +
+      '<td style="border:1px solid #ccc;padding:7px 10px;background:' + L + ';color:' + B + ';font-family:Arial,sans-serif;font-size:13px;font-weight:bold;">Advisor Ext.</td>' +
+      '<td style="border:1px solid #ccc;padding:7px 10px;background:#fff;font-family:Arial,sans-serif;font-size:13px;color:#333;">' + (advisor || '&nbsp;') + '</td>' +
+    '</tr>' +
+    '<tr>' +
+      '<td style="border:1px solid #ccc;padding:7px 10px;background:' + L + ';color:' + B + ';font-family:Arial,sans-serif;font-size:13px;font-weight:bold;">Session Date</td>' +
+      '<td style="border:1px solid #ccc;padding:7px 10px;background:#fff;font-family:Arial,sans-serif;font-size:13px;color:#333;">' + (date || '&nbsp;') + '</td>' +
+    '</tr>';
+
+  if (photoSrc) {
+    detailRows = '<tr>' +
+      '<td rowspan="4" style="border:1px solid #ccc;padding:10px;background:#fff;text-align:center;vertical-align:middle;width:130px;">' +
+        '<img src="' + photoSrc + '" width="110" height="110" style="border-radius:50%;border:2px solid ' + M + ';width:110px;height:110px;display:block;margin:0 auto;">' +
+      '</td>' +
+      '<td width="38%" style="border:1px solid #ccc;padding:7px 10px;background:' + L + ';color:' + B + ';font-family:Arial,sans-serif;font-size:13px;font-weight:bold;">Coach</td>' +
+      '<td style="border:1px solid #ccc;padding:7px 10px;background:#fff;font-family:Arial,sans-serif;font-size:13px;color:#333;">Karina</td>' +
+    '</tr>' +
+    '<tr>' +
+      '<td style="border:1px solid #ccc;padding:7px 10px;background:' + L + ';color:' + B + ';font-family:Arial,sans-serif;font-size:13px;font-weight:bold;">Advisor Ext.</td>' +
+      '<td style="border:1px solid #ccc;padding:7px 10px;background:#fff;font-family:Arial,sans-serif;font-size:13px;color:#333;">' + (advisor || '&nbsp;') + '</td>' +
+    '</tr>' +
+    '<tr>' +
+      '<td style="border:1px solid #ccc;padding:7px 10px;background:' + L + ';color:' + B + ';font-family:Arial,sans-serif;font-size:13px;font-weight:bold;">Session Date</td>' +
+      '<td style="border:1px solid #ccc;padding:7px 10px;background:#fff;font-family:Arial,sans-serif;font-size:13px;color:#333;">' + (date || '&nbsp;') + '</td>' +
+    '</tr>';
+  }
+
+  var modules = '';
+  TOPICS.forEach(function(key) {
+    var mod = document.getElementById('mod-' + key);
+    if (mod.classList.contains('faded-mod')) return;
+    var titleEl = document.getElementById('hdr-text-' + key) || document.getElementById('hdr-' + key);
+    var title = titleEl.textContent.trim().replace('Manage tips','').trim();
+    var val = document.getElementById('recap-' + key).value.trim().replace(/\n/g, '<br>');
+
+    var guideLinks = (selectedGuides[key] && selectedGuides[key].length > 0)
+      ? '<div style="margin-top:10px;font-family:Arial,sans-serif;">' +
+          '<div style="font-size:11px;font-weight:bold;color:' + B + ';text-transform:uppercase;letter-spacing:0.4px;margin-bottom:5px;">Guides</div>' +
+          selectedGuides[key].map(function(g) {
+            return '<div style="font-size:13px;margin-bottom:6px;">&#8226; ' +
+              '<a href="' + g.url + '" target="_blank" style="color:' + B + ';text-decoration:underline;font-family:Arial,sans-serif;font-size:13px;">' + g.title + '</a></div>';
+          }).join('') +
+        '</div>'
+      : '';
+
+    modules +=
+      '<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:12px;border-collapse:collapse;">' +
+        '<tr><td style="padding:9px 14px;font-size:12px;font-weight:bold;text-transform:uppercase;background:' + B + ';color:#fff;border:1px solid ' + B + ';border-bottom:none;font-family:Arial,sans-serif;">' + title + '</td></tr>' +
+        '<tr><td style="border:1px solid ' + M + ';border-top:none;padding:12px 14px;background:#fff;">' +
+          '<div style="font-size:11px;font-weight:bold;color:' + B + ';text-transform:uppercase;margin-bottom:6px;font-family:Arial,sans-serif;">Recap &amp; Recommendations</div>' +
+          '<div style="font-size:13px;color:#333;min-height:40px;line-height:1.6;font-family:Arial,sans-serif;">' + (val || '&nbsp;') + '</div>' +
+          guideLinks +
+        '</td></tr>' +
+      '</table>';
+  });
+
+  var emailBody =
+    '<table width="680" cellpadding="0" cellspacing="0" border="0" style="font-family:Arial,sans-serif;background:#fff;">' +
+      '<tr><td style="background:#fff;border-bottom:3px solid ' + M + ';padding:14px 28px;text-align:center;">' +
+        '<img src="https://i.imgur.com/udDM23H.png" alt="ExpertLink" width="280" style="display:block;width:280px;height:auto;margin:0 auto;">' +
+      '</td></tr>' +
+      '<tr><td style="background:' + B + ';padding:18px 28px;text-align:center;">' +
+        '<div style="font-family:Arial,sans-serif;font-size:20px;font-weight:bold;color:#fff;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">Coaching Session Recap</div>' +
+        '<div style="font-family:Arial,sans-serif;font-size:13px;color:#BDD7EE;font-style:italic;">Recap &amp; Action Summary</div>' +
+      '</td></tr>' +
+      '<tr><td style="padding:24px 28px;">' +
+        secTitle('Session Details') +
+        '<table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;margin-bottom:20px;">' + detailRows + '</table>' +
+        (modules ? secTitle('Recap &amp; Recommendations') + modules : '') +
+        (goals ? secTitle('Goals') +
+          '<div style="font-family:Arial,sans-serif;font-size:12px;font-weight:bold;color:#444;margin-bottom:4px;">Goal(s) We&#39;re Working Toward</div>' +
+          '<div style="font-family:Arial,sans-serif;font-size:13px;color:#333;border:1px solid #ccc;padding:8px 10px;background:#F5F7FA;min-height:40px;line-height:1.6;">' + goals + '</div>'
+        : '') +
+      '</td></tr>' +
+      '<tr><td style="background:#F5F7FA;border-top:1px solid #dde3ea;padding:14px 28px;text-align:center;">' +
+        '<div style="font-family:Arial,sans-serif;font-size:13px;color:#555;line-height:1.8;">' +
+          'Questions? Reach out anytime at <strong style="color:' + B + ';">Karina@expert-link.com</strong> or send a ticket through the Portal.<br>' +
+          'Looking forward to our next session!' +
+        '</div>' +
+      '</td></tr>' +
+    '</table>';
+
+  // Build .eml file content - MIME format that Outlook opens natively with full HTML + links intact
+  var emlContent = [
+    'MIME-Version: 1.0',
+    'Date: ' + new Date().toUTCString(),
+    'Subject: ExpertLink Coaching Session Recap' + (advisor ? ' - ' + advisor : ''),
+    'Content-Type: text/html; charset=UTF-8',
+    '',
+    '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body>',
+    emailBody,
+    '</body></html>'
+  ].join('\r\n');
+
+  // Download as .eml - double-clicking opens directly in Outlook with links working
+  var blob = new Blob([emlContent], { type: 'message/rfc822' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'CoachingFollowUp' + (advisor ? '_' + advisor.replace(/\s+/g,'_') : '') + '.eml';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  // Show instruction
+  var btn = document.querySelector('#toolbar button');
+  var orig = btn.textContent;
+  btn.textContent = '✅ Downloaded! Double-click the .eml file to open in Outlook.';
+  btn.style.background = '#2a7a2a';
+  btn.style.fontSize = '12px';
+  setTimeout(function() { btn.textContent = orig; btn.style.background = ''; btn.style.fontSize = ''; }, 5000);
+}
+
+// ── TIPS MANAGEMENT ──
+var TIPS = {
+  schedule: [
+    'Peak times: daily 6am–10am EST / 7pm–2am EST, especially weekends',
+    'Add promotion dates to calendar availability',
+    'Block off buffer time between sessions (15–30 min)',
+    'Set a consistent weekly schedule for client predictability',
+    'Review and update availability every Monday morning'
+  ],
+  missed: [
+    'Send reminder 24 hrs and 1 hr before each session',
+    'Enable SMS/email reminders in platform settings',
+    'Follow up within 2 hrs of a missed connection',
+    'Track no-show patterns — flag repeat offenders',
+    'Offer easy reschedule link in follow-up message'
+  ],
+  retention: [
+    'Send welcome message within 24 hrs of new member joining',
+    'Check in with inactive members after 2 weeks of no activity',
+    'Offer a loyalty incentive for members at 90-day mark',
+    'Personalize outreach — reference their specific goals',
+    'Ask for feedback after every 3rd session'
+  ],
+  ratings: [
+    'Ask satisfied clients for a review within 24 hrs of session',
+    'Respond to all reviews — positive and negative — within 48 hrs',
+    'Address negative reviews professionally; offer to resolve offline',
+    'Include a review request link in your follow-up emails',
+    'Target 5-star experience: confirm goals at start of each session'
+  ],
+  profile: [
+    'Update headshot — professional, well-lit, friendly expression',
+    'Bio should lead with client outcome, not your credentials',
+    'Add specialties and keywords for better search visibility',
+    'Include a short video intro if platform supports it',
+    'Review and refresh profile every 90 days'
+  ],
+  features: [
+    'Enable all available notification settings for faster response',
+    'Use the analytics dashboard weekly to track performance',
+    'Set up auto-reply for new inquiries within business hours',
+    'Explore promotional tools available on the platform',
+    'Complete your profile to 100% for maximum visibility'
+  ],
+  communications: [
+    'Respond to all member messages within 24 hours',
+    'Use a warm, professional tone in all communications',
+    'Personalize responses — reference the member by name',
+    'Follow up after sessions to check on member satisfaction',
+    'Keep messages concise and solution-focused'
+  ],
+  amp: [
+    'Run AMP during peak hours: 6am–10am / 7pm–2am EST',
+    'Budget recommendation: start at $5–10/day and adjust weekly',
+    'Target new members in your specialty area first',
+    'Review AMP performance every 7 days and adjust targeting',
+    'Align promotions with holidays and high-demand dates'
+  ]
+};
+
+var TOPIC_NAMES = {
+  schedule:'Schedule', missed:'Missed Connections', retention:'New Member / Existing Member Retention',
+  ratings:'Star Ratings / Reviews', profile:'Profile / Bio Page',
+  features:'Features', amp:'Advisor Managed Promotions (AMP)'
+};
+
+var currentModalKey = null;
+
+function rebuildSelect(key) {
+  var sel = document.getElementById('select-' + key);
+  if (!sel) return;
+  sel.innerHTML = '<option value="">+ Add a tip...</option>';
+  TIPS[key].forEach(function(t) {
+    var opt = document.createElement('option');
+    opt.value = t; opt.textContent = t;
+    sel.appendChild(opt);
+  });
+}
+
+// Load tips from localStorage on startup, fall back to defaults
+document.addEventListener('DOMContentLoaded', function() {
+  loadGuides();
+  Object.keys(TIPS).forEach(function(k) {
+    var saved = localStorage.getItem('el_tips_' + k);
+    if (saved) {
+      try { TIPS[k] = JSON.parse(saved); } catch(e) {}
+    }
+    rebuildSelect(k);
+  });
+});
+
+function saveTips(key) {
+  try { localStorage.setItem('el_tips_' + key, JSON.stringify(TIPS[key])); } catch(e) {}
+}
+
+function insertSnippet(id, text) {
+  if (!text) return;
+  var ta = document.getElementById(id);
+  if (!ta) return;
+  var cur = ta.value.trim();
+  ta.value = cur ? cur + '\n\u2022 ' + text : '\u2022 ' + text;
+  ta.focus();
+  ta.scrollTop = ta.scrollHeight;
+}
+
+function openTipsModal(key) {
+  currentModalKey = key;
+  document.getElementById('modal-title').textContent = 'Manage Tips — ' + TOPIC_NAMES[key];
+  renderModalList();
+  document.getElementById('new-tip-input').value = '';
+  var ov = document.getElementById('tips-modal-overlay');
+  ov.style.display = 'flex';
+  ov.onclick = function(e) { if(e.target === ov) closeTipsModal(); };
+}
+
+function closeTipsModal() {
+  document.getElementById('tips-modal-overlay').style.display = 'none';
+  currentModalKey = null;
+}
+
+function renderModalList() {
+  var list = document.getElementById('modal-tips-list');
+  list.innerHTML = '';
+  var tips = TIPS[currentModalKey];
+  if (tips.length === 0) {
+    list.innerHTML = '<div style="color:#aaa;font-size:13px;font-family:Arial,sans-serif;padding:8px 0;">No tips yet. Add one below.</div>';
+    return;
+  }
+  tips.forEach(function(t, i) {
+    var row = document.createElement('div');
+    row.id = 'tip-row-' + i;
+    row.style.cssText = 'display:flex;align-items:center;gap:6px;padding:7px 0;border-bottom:1px solid #eee;font-family:Arial,sans-serif;font-size:13px;';
+
+    // Text display span
+    var span = document.createElement('span');
+    span.id = 'tip-text-' + i;
+    span.style.flex = '1';
+    span.style.color = '#333';
+    span.textContent = t;
+
+    // Edit button
+    var editBtn = document.createElement('button');
+    editBtn.style.cssText = 'background:none;border:1px solid #2E75B6;color:#2E75B6;border-radius:4px;padding:2px 10px;font-size:11px;cursor:pointer;flex-shrink:0;font-family:Arial,sans-serif;';
+    editBtn.textContent = 'Edit';
+    (function(idx, tipText) {
+      editBtn.onclick = function() { startEdit(idx, tipText); };
+    })(i, t);
+
+    // Delete button
+    var delBtn = document.createElement('button');
+    delBtn.style.cssText = 'background:none;border:1px solid #e74c3c;color:#e74c3c;border-radius:4px;padding:2px 10px;font-size:11px;cursor:pointer;flex-shrink:0;font-family:Arial,sans-serif;';
+    delBtn.textContent = 'Delete';
+    (function(idx){ delBtn.onclick = function() { deleteTip(idx); }; })(i);
+
+    row.appendChild(span);
+    row.appendChild(editBtn);
+    row.appendChild(delBtn);
+    list.appendChild(row);
+  });
+}
+
+function startEdit(i, currentText) {
+  var row = document.getElementById('tip-row-' + i);
+  if (!row) return;
+  row.innerHTML = '';
+
+  var input = document.createElement('input');
+  input.type = 'text';
+  input.value = currentText;
+  input.style.cssText = 'flex:1;border:1px solid #2E75B6;padding:5px 8px;font-size:13px;font-family:Arial,sans-serif;color:#333;outline:none;min-width:0;';
+
+  var saveBtn = document.createElement('button');
+  saveBtn.style.cssText = 'background:#1E4E79;color:#fff;border:none;border-radius:4px;padding:3px 12px;font-size:11px;cursor:pointer;flex-shrink:0;font-family:Arial,sans-serif;';
+  saveBtn.textContent = 'Update';
+
+  var cancelBtn = document.createElement('button');
+  cancelBtn.style.cssText = 'background:none;border:1px solid #aaa;color:#666;border-radius:4px;padding:3px 10px;font-size:11px;cursor:pointer;flex-shrink:0;font-family:Arial,sans-serif;';
+  cancelBtn.textContent = 'Cancel';
+
+  (function(idx) {
+    saveBtn.onclick = function() {
+      var val = input.value.trim();
+      if (!val) return;
+      TIPS[currentModalKey][idx] = val;
+      saveTips(currentModalKey);
+      rebuildSelect(currentModalKey);
+      renderModalList();
+    };
+    cancelBtn.onclick = function() { renderModalList(); };
+    input.onkeydown = function(e) {
+      if (e.key === 'Enter') saveBtn.onclick();
+      if (e.key === 'Escape') cancelBtn.onclick();
+    };
+  })(i);
+
+  row.style.display = 'flex';
+  row.appendChild(input);
+  row.appendChild(saveBtn);
+  row.appendChild(cancelBtn);
+  input.focus();
+  input.select();
+}
+
+function deleteTip(i) {
+  TIPS[currentModalKey].splice(i, 1);
+  saveTips(currentModalKey);
+  renderModalList();
+  rebuildSelect(currentModalKey);
+}
+
+function addNewTip() {
+  var input = document.getElementById('new-tip-input');
+  var val = input.value.trim();
+  if (!val) return;
+  TIPS[currentModalKey].push(val);
+  saveTips(currentModalKey);
+  input.value = '';
+  renderModalList();
+  rebuildSelect(currentModalKey);
+}
+
+function addBullet(id) {
+  var ta = document.getElementById(id);
+  if (!ta) return;
+  var val = ta.value;
+  var pos = ta.selectionStart;
+  // If cursor is at end of a line or textarea is empty, add bullet on new line
+  var before = val.substring(0, pos);
+  var after = val.substring(pos);
+  var insert = (before.length === 0 || before.endsWith('\n')) ? '\u2022 ' : '\n\u2022 ';
+  ta.value = before + insert + after;
+  var newPos = before.length + insert.length;
+  ta.setSelectionRange(newPos, newPos);
+  ta.focus();
+}
+
+// ── GUIDES ──
+var GUIDES = {
+  schedule: [],
+  missed: [],
+  retention: [],
+  ratings: [],
+  profile: [],
+  features: [],
+  communications: [],
+  custom: [],
+  amp: [
+    { title: 'Advisor Managed Promotions - Purchase 10 get 3 FREE Minutes', url: 'https://expert-link-advisor-success-guide.my.canva.site/advisor-managed-promotions-guide' }
+  ]
+};
+
+var currentGuidesKey = null;
+
+function saveGuides(key) {
+  try { localStorage.setItem('el_guides_' + key, JSON.stringify(GUIDES[key])); } catch(e) {}
+}
+
+function loadGuides() {
+  Object.keys(GUIDES).forEach(function(k) {
+    var saved = localStorage.getItem('el_guides_' + k);
+    if (saved) { try { GUIDES[k] = JSON.parse(saved); } catch(e) {} }
+    rebuildGuideSelect(k);
+  });
+}
+
+function rebuildGuideSelect(key) {
+  var sel = document.getElementById('guide-select-' + key);
+  if (!sel) return;
+  sel.innerHTML = '<option value="">+ Add a guide link...</option>';
+  GUIDES[key].forEach(function(g, i) {
+    var opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = g.title;
+    sel.appendChild(opt);
+  });
+}
+
+// Track which guides are selected per topic for the email
+var selectedGuides = {};
+Object.keys(GUIDES).forEach(function(k) { selectedGuides[k] = []; });
+if (!selectedGuides['communications']) selectedGuides['communications'] = [];
+
+function addGuide(key, idx, title) {
+  if (idx === '' || idx === null) return;
+  var guide = GUIDES[key][parseInt(idx)];
+  if (!guide) return;
+  // Avoid duplicates
+  for (var i = 0; i < selectedGuides[key].length; i++) {
+    if (selectedGuides[key][i].url === guide.url) return;
+  }
+  selectedGuides[key].push({ title: guide.title, url: guide.url });
+  renderSelectedGuides(key);
+}
+
+function renderSelectedGuides(key) {
+  var container = document.getElementById('selected-guides-' + key);
+  if (!container) return;
+  container.innerHTML = '';
+  selectedGuides[key].forEach(function(g, i) {
+    var row = document.createElement('div');
+    row.style.cssText = 'display:flex;align-items:center;gap:6px;padding:4px 0;font-family:Arial,sans-serif;font-size:12px;';
+    var link = document.createElement('a');
+    link.href = g.url;
+    link.target = '_blank';
+    link.textContent = '\u2022 ' + g.title;
+    link.style.cssText = 'flex:1;color:#1E4E79;text-decoration:underline;cursor:pointer;';
+    var removeBtn = document.createElement('button');
+    removeBtn.textContent = '\u2715';
+    removeBtn.style.cssText = 'background:none;border:none;color:#e74c3c;cursor:pointer;font-size:13px;padding:0 2px;flex-shrink:0;';
+    removeBtn.title = 'Remove from this session';
+    (function(idx){ removeBtn.onclick = function() {
+      selectedGuides[key].splice(idx, 1);
+      renderSelectedGuides(key);
+    }; })(i);
+    row.appendChild(link);
+    row.appendChild(removeBtn);
+    container.appendChild(row);
+  });
+}
+
+function openGuidesModal(key) {
+  currentGuidesKey = key;
+  document.getElementById('guides-modal-title').textContent = 'Manage Guides — ' + TOPIC_NAMES[key];
+  document.getElementById('new-guide-title').value = '';
+  document.getElementById('new-guide-url').value = '';
+  renderGuidesList();
+  var ov = document.getElementById('guides-modal-overlay');
+  ov.style.display = 'flex';
+  ov.onclick = function(e) { if (e.target === ov) closeGuidesModal(); };
+}
+
+function closeGuidesModal() {
+  document.getElementById('guides-modal-overlay').style.display = 'none';
+  currentGuidesKey = null;
+}
+
+function renderGuidesList() {
+  var list = document.getElementById('modal-guides-list');
+  list.innerHTML = '';
+  var guides = GUIDES[currentGuidesKey];
+  if (guides.length === 0) {
+    list.innerHTML = '<div style="color:#aaa;font-size:13px;font-family:Arial,sans-serif;padding:8px 0;">No guides yet. Add one below.</div>';
+    return;
+  }
+  guides.forEach(function(g, i) {
+    var row = document.createElement('div');
+    row.id = 'guide-row-' + i;
+    row.style.cssText = 'padding:8px 0;border-bottom:1px solid #eee;font-family:Arial,sans-serif;font-size:13px;';
+
+    var titleRow = document.createElement('div');
+    titleRow.style.cssText = 'display:flex;align-items:center;gap:6px;';
+
+    var info = document.createElement('div');
+    info.style.flex = '1';
+    var titleSpan = document.createElement('div');
+    titleSpan.style.cssText = 'font-weight:bold;color:#1E4E79;';
+    titleSpan.textContent = g.title;
+    var urlSpan = document.createElement('div');
+    urlSpan.style.cssText = 'font-size:11px;color:#888;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:320px;';
+    urlSpan.textContent = g.url;
+    info.appendChild(titleSpan);
+    info.appendChild(urlSpan);
+
+    var editBtn = document.createElement('button');
+    editBtn.style.cssText = 'background:none;border:1px solid #2E75B6;color:#2E75B6;border-radius:4px;padding:2px 10px;font-size:11px;cursor:pointer;flex-shrink:0;font-family:Arial,sans-serif;';
+    editBtn.textContent = 'Edit';
+    (function(idx, gt, gu){ editBtn.onclick = function() { startEditGuide(idx, gt, gu); }; })(i, g.title, g.url);
+
+    var delBtn = document.createElement('button');
+    delBtn.style.cssText = 'background:none;border:1px solid #e74c3c;color:#e74c3c;border-radius:4px;padding:2px 10px;font-size:11px;cursor:pointer;flex-shrink:0;font-family:Arial,sans-serif;';
+    delBtn.textContent = 'Delete';
+    (function(idx){ delBtn.onclick = function() {
+      GUIDES[currentGuidesKey].splice(idx, 1);
+      saveGuides(currentGuidesKey);
+      rebuildGuideSelect(currentGuidesKey);
+      renderGuidesList();
+    }; })(i);
+
+    titleRow.appendChild(info);
+    titleRow.appendChild(editBtn);
+    titleRow.appendChild(delBtn);
+    row.appendChild(titleRow);
+    list.appendChild(row);
+  });
+}
+
+function startEditGuide(i, currentTitle, currentUrl) {
+  var row = document.getElementById('guide-row-' + i);
+  if (!row) return;
+  row.innerHTML = '';
+  row.style.cssText = 'padding:8px 0;border-bottom:1px solid #eee;display:flex;flex-direction:column;gap:5px;font-family:Arial,sans-serif;';
+
+  var titleInput = document.createElement('input');
+  titleInput.type = 'text'; titleInput.value = currentTitle;
+  titleInput.style.cssText = 'border:1px solid #2E75B6;padding:5px 8px;font-size:13px;font-family:Arial,sans-serif;color:#333;outline:none;';
+
+  var urlInput = document.createElement('input');
+  urlInput.type = 'text'; urlInput.value = currentUrl;
+  urlInput.style.cssText = 'border:1px solid #2E75B6;padding:5px 8px;font-size:13px;font-family:Arial,sans-serif;color:#333;outline:none;';
+  urlInput.placeholder = 'URL';
+
+  var btnRow = document.createElement('div');
+  btnRow.style.cssText = 'display:flex;gap:6px;';
+
+  var saveBtn = document.createElement('button');
+  saveBtn.style.cssText = 'background:#1E4E79;color:#fff;border:none;border-radius:4px;padding:3px 12px;font-size:11px;cursor:pointer;font-family:Arial,sans-serif;';
+  saveBtn.textContent = 'Update';
+
+  var cancelBtn = document.createElement('button');
+  cancelBtn.style.cssText = 'background:none;border:1px solid #aaa;color:#666;border-radius:4px;padding:3px 10px;font-size:11px;cursor:pointer;font-family:Arial,sans-serif;';
+  cancelBtn.textContent = 'Cancel';
+
+  (function(idx) {
+    saveBtn.onclick = function() {
+      var t = titleInput.value.trim(), u = urlInput.value.trim();
+      if (!t || !u) return;
+      GUIDES[currentGuidesKey][idx] = { title: t, url: u };
+      saveGuides(currentGuidesKey);
+      rebuildGuideSelect(currentGuidesKey);
+      renderGuidesList();
+    };
+    cancelBtn.onclick = function() { renderGuidesList(); };
+    urlInput.onkeydown = function(e) { if (e.key === 'Enter') saveBtn.onclick(); if (e.key === 'Escape') cancelBtn.onclick(); };
+  })(i);
+
+  btnRow.appendChild(saveBtn);
+  btnRow.appendChild(cancelBtn);
+  row.appendChild(titleInput);
+  row.appendChild(urlInput);
+  row.appendChild(btnRow);
+  titleInput.focus();
+}
+
+function addNewGuide() {
+  var t = document.getElementById('new-guide-title').value.trim();
+  var u = document.getElementById('new-guide-url').value.trim();
+  if (!t || !u) { alert('Please enter both a title and a URL.'); return; }
+  if (!u.startsWith('http')) u = 'https://' + u;
+  GUIDES[currentGuidesKey].push({ title: t, url: u });
+  saveGuides(currentGuidesKey);
+  rebuildGuideSelect(currentGuidesKey);
+  renderGuidesList();
+  document.getElementById('new-guide-title').value = '';
+  document.getElementById('new-guide-url').value = '';
+}
+
+function copyForOutlook() {
+  var B = '#1E4E79', M = '#2E75B6', L = '#D6E4F0';
+
+  function secTitle(text) {
+    return '<div style="font-family:Arial,sans-serif;font-size:13px;font-weight:bold;color:' + B + ';text-transform:uppercase;letter-spacing:0.5px;border-bottom:3px solid ' + M + ';padding-bottom:6px;margin-bottom:12px;margin-top:20px;">' + text + '</div>';
+  }
+
+  function getField(id) {
+    if (id === 'f-date') {
+      var picker = document.getElementById('f-date-picker');
+      return picker ? (picker.getAttribute('data-formatted') || '') : '';
+    }
+    if (id === 'f-coach') {
+      var sel = document.getElementById('f-coach');
+      return sel ? sel.value : 'Karina';
+    }
+    var el = document.getElementById(id);
+    if (!el) return '';
+    var s = el.querySelector('span');
+    if (s) return '';
+    return el.textContent.trim();
+  }
+
+  var advisor = getField('f-advisor');
+  var date = getField('f-date');
+  var goals = document.getElementById('f-goals').value.trim().replace(/\n/g, '<br>');
+  var logoSrc = document.querySelector('#wrap img').src;
+  var photoEl = document.getElementById('adv-photo');
+  var photoSrc = photoEl && photoEl.src && photoEl.src.startsWith('data:') ? photoEl.src : '';
+
+  var advisorName = getField('f-advisor-name');
+  var detailRows =
+    '<tr><td width="38%" style="border:1px solid #ccc;padding:7px 10px;background:' + L + ';color:' + B + ';font-family:Arial,sans-serif;font-size:13px;font-weight:bold;">Coach</td>' +
+    '<td style="border:1px solid #ccc;padding:7px 10px;background:#fff;font-family:Arial,sans-serif;font-size:13px;color:#333;">Karina</td></tr>' +
+    '<tr><td style="border:1px solid #ccc;padding:7px 10px;background:' + L + ';color:' + B + ';font-family:Arial,sans-serif;font-size:13px;font-weight:bold;">Advisor Name</td>' +
+    '<td style="border:1px solid #ccc;padding:7px 10px;background:#fff;font-family:Arial,sans-serif;font-size:13px;color:#333;">' + (advisorName || '&nbsp;') + '</td></tr>' +
+    '<tr><td style="border:1px solid #ccc;padding:7px 10px;background:' + L + ';color:' + B + ';font-family:Arial,sans-serif;font-size:13px;font-weight:bold;">Advisor Ext.</td>' +
+    '<td style="border:1px solid #ccc;padding:7px 10px;background:#fff;font-family:Arial,sans-serif;font-size:13px;color:#333;">' + (advisor || '&nbsp;') + '</td></tr>' +
+    '<tr><td style="border:1px solid #ccc;padding:7px 10px;background:' + L + ';color:' + B + ';font-family:Arial,sans-serif;font-size:13px;font-weight:bold;">Session Date</td>' +
+    '<td style="border:1px solid #ccc;padding:7px 10px;background:#fff;font-family:Arial,sans-serif;font-size:13px;color:#333;">' + (date || '&nbsp;') + '</td></tr>';
+
+  if (photoSrc) {
+    detailRows = '<tr><td rowspan="3" style="border:1px solid #ccc;padding:10px;background:#fff;text-align:center;vertical-align:middle;width:100px;">' +
+      '<img src="' + photoSrc + '" width="110" height="110" style="border-radius:50%;border:2px solid ' + M + ';width:110px;height:110px;display:block;margin:0 auto;"></td>' +
+      '<td width="38%" style="border:1px solid #ccc;padding:7px 10px;background:' + L + ';color:' + B + ';font-family:Arial,sans-serif;font-size:13px;font-weight:bold;">Coach</td>' +
+      '<td style="border:1px solid #ccc;padding:7px 10px;background:#fff;font-family:Arial,sans-serif;font-size:13px;color:#333;font-weight:bold;">' + getField('f-coach') + '</td></tr>' +
+      '<tr><td style="border:1px solid #ccc;padding:7px 10px;background:' + L + ';color:' + B + ';font-family:Arial,sans-serif;font-size:13px;font-weight:bold;">Advisor Ext.</td>' +
+      '<td style="border:1px solid #ccc;padding:7px 10px;background:#fff;font-family:Arial,sans-serif;font-size:13px;color:#333;">' + (advisor || '&nbsp;') + '</td></tr>' +
+      '<tr><td style="border:1px solid #ccc;padding:7px 10px;background:' + L + ';color:' + B + ';font-family:Arial,sans-serif;font-size:13px;font-weight:bold;">Session Date</td>' +
+      '<td style="border:1px solid #ccc;padding:7px 10px;background:#fff;font-family:Arial,sans-serif;font-size:13px;color:#333;">' + (date || '&nbsp;') + '</td></tr>';
+  }
+
+  var modules = '';
+  TOPICS.forEach(function(key) {
+    var mod = document.getElementById('mod-' + key);
+    if (mod.classList.contains('faded-mod')) return;
+    var titleEl = document.getElementById('hdr-text-' + key) || document.getElementById('hdr-' + key);
+    var title = titleEl.textContent.trim().replace('Manage tips','').trim();
+    var val = document.getElementById('recap-' + key).value.trim().replace(/\n/g, '<br>');
+    var guideLinks = (selectedGuides[key] && selectedGuides[key].length > 0)
+      ? '<div style="margin-top:10px;"><div style="font-size:11px;font-weight:bold;color:' + B + ';text-transform:uppercase;margin-bottom:5px;font-family:Arial,sans-serif;">Guides</div>' +
+        selectedGuides[key].map(function(g) {
+          return '<div style="font-size:13px;margin-bottom:4px;font-family:Arial,sans-serif;">&#8226; <a href="' + g.url + '" style="color:' + B + ';text-decoration:underline;">' + g.title + '</a></div>';
+        }).join('') + '</div>'
+      : '';
+    modules +=
+      '<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:12px;border-collapse:collapse;">' +
+      '<tr><td style="padding:9px 14px;font-size:12px;font-weight:bold;text-transform:uppercase;background:' + B + ';color:#fff;border:1px solid ' + B + ';border-bottom:none;font-family:Arial,sans-serif;">' + title + '</td></tr>' +
+      '<tr><td style="border:1px solid ' + M + ';border-top:none;padding:12px 14px;background:#fff;">' +
+      '<div style="font-size:11px;font-weight:bold;color:' + B + ';text-transform:uppercase;margin-bottom:6px;font-family:Arial,sans-serif;">Recap &amp; Recommendations</div>' +
+      '<div style="font-size:13px;color:#333;min-height:40px;line-height:1.6;font-family:Arial,sans-serif;">' + (val || '&nbsp;') + '</div>' +
+      guideLinks + '</td></tr></table>';
+  });
+
+  var emailHtml =
+    '<table width="680" cellpadding="0" cellspacing="0" border="0" style="font-family:Arial,sans-serif;background:#fff;border:1px solid #dde3ea;">' +
+    '<tr><td style="background:#fff;border-bottom:3px solid ' + M + ';padding:14px 28px;">' +
+    '<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>' +
+    '<td><img src="' + logoSrc + '" height="44" style="display:block;height:44px;width:auto;" alt="ExpertLink"></td>' +
+    '<td align="right" style="font-family:Arial,sans-serif;font-size:12px;color:#888;font-style:italic;">Coaching Session Recap</td>' +
+    '</tr></table></td></tr>' +
+    '<tr><td style="background:' + B + ';padding:18px 28px;text-align:center;">' +
+    '<div style="font-family:Arial,sans-serif;font-size:20px;font-weight:bold;color:#fff;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">Coaching Session Recap</div>' +
+    '<div style="font-family:Arial,sans-serif;font-size:13px;color:#BDD7EE;font-style:italic;">Recap &amp; Action Summary</div></td></tr>' +
+    '<tr><td style="padding:24px 28px;">' +
+    secTitle('Session Details') +
+    '<table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;margin-bottom:20px;">' + detailRows + '</table>' +
+    (modules ? secTitle('Recap &amp; Recommendations') + modules : '') +
+    (goals ? secTitle('Goals') +
+      '<div style="font-family:Arial,sans-serif;font-size:12px;font-weight:bold;color:#444;margin-bottom:4px;">Goal(s) We&#39;re Working Toward</div>' +
+      '<div style="font-family:Arial,sans-serif;font-size:13px;color:#333;border:1px solid #ccc;padding:8px 10px;background:#F5F7FA;min-height:40px;line-height:1.6;">' + goals + '</div>' : '') +
+    '</td></tr>' +
+    '<tr><td style="background:#F5F7FA;border-top:1px solid #dde3ea;padding:14px 28px;text-align:center;">' +
+    '<div style="font-family:Arial,sans-serif;font-size:13px;color:#555;line-height:1.8;">Questions? Reach out anytime at <strong style="color:' + B + ';">Karina@expert-link.com</strong> or send a ticket through the Portal.<br>Looking forward to our next session!</div>' +
+    '</td></tr></table>';
+
+  var blob = new Blob([emailHtml], {type: 'text/html'});
+  navigator.clipboard.write([new ClipboardItem({'text/html': blob})]).then(function() {
+    var btns = document.querySelectorAll('#toolbar button');
+    var btn = btns[1];
+    var orig = btn.textContent;
+    btn.textContent = '✅ Copied! Paste into Outlook.';
+    btn.style.background = '#2a7a2a';
+    setTimeout(function() { btn.textContent = orig; btn.style.background = ''; }, 3000);
+  }).catch(function() {
+    alert('Could not copy automatically. Please try Ctrl+A then Ctrl+C manually.');
+  });
+}
+
+function formatDate(val) {
+  if (!val) return;
+  var d = new Date(val + 'T00:00:00');
+  var months = ['January','February','March','April','May','June',
+                'July','August','September','October','November','December'];
+  var formatted = months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
+  document.getElementById('f-date').textContent = formatted;
+  document.getElementById('f-date-picker').setAttribute('data-formatted', formatted);
+}
+
+function resetForm() {
+  if (!confirm('Reset the form? All filled-in content will be cleared.')) return;
+
+  // Clear contenteditable fields
+  document.querySelectorAll('[contenteditable][data-ph]:not(#f-date)').forEach(function(el) {
+    var ph = el.getAttribute('data-ph');
+    el.innerHTML = '<span style="color:#aaa;font-style:italic;font-weight:normal;">' + ph + '</span>';
+  });
+
+  // Clear date picker
+  var dp = document.getElementById('f-date-picker');
+  if (dp) { dp.value = ''; dp.removeAttribute('data-formatted'); }
+  var df = document.getElementById('f-date');
+  if (df) df.textContent = '';
+
+  // Clear all textareas
+  document.querySelectorAll('textarea').forEach(function(ta) { ta.value = ''; });
+
+  // Reset all topic toggles to faded
+  TOPICS.forEach(function(key) {
+    var chk = document.getElementById('chk-' + key);
+    var mod = document.getElementById('mod-' + key);
+    var hdr = document.getElementById('hdr-' + key);
+    var body = document.getElementById('body-' + key);
+    var lbl = document.getElementById('lbl-' + key);
+    var recap = document.getElementById('recap-' + key);
+    var row = chk ? chk.parentElement : null;
+    if (chk) { chk.textContent = ''; chk.style.background = '#fff'; chk.style.borderColor = '#2E75B6'; chk.style.color = '#1E4E79'; }
+    if (row) { row.style.background = '#fff'; row.style.borderColor = '#ccc'; }
+    if (mod) mod.classList.add('faded-mod');
+    if (hdr) hdr.className = 'mod-hdr faded';
+    if (body) body.className = 'mod-body faded';
+    if (lbl) lbl.className = 'mod-lbl faded';
+    if (recap) recap.className = 'recap faded';
+    // Clear selected guides
+    if (selectedGuides[key]) selectedGuides[key] = [];
+    renderSelectedGuides(key);
+  });
+
+  // Clear photo
+  var photo = document.getElementById('adv-photo');
+  var preview = document.getElementById('photo-preview');
+  var placeholder = document.getElementById('photo-placeholder');
+  if (photo) photo.src = '';
+  if (preview) preview.style.display = 'none';
+  if (placeholder) placeholder.style.display = 'block';
+  var photoInput = document.getElementById('photo-upload');
+  if (photoInput) photoInput.value = '';
+
+  // Reset custom topic
+  var custInput = document.getElementById('custom-topic-title');
+  if (custInput) custInput.value = '';
+  var custHdr = document.getElementById('hdr-text-custom');
+  if (custHdr) custHdr.textContent = 'Custom Topic';
+  TOPIC_NAMES['custom'] = 'Custom Topic';
+
+  // Reset coach
+  var coachSel = document.getElementById('f-coach');
+  if (coachSel) coachSel.value = 'Karina';
+
+  // Scroll to top
+  window.scrollTo(0, 0);
+}
+
+function openMailto() {
+  function getField(id) {
+    if (id === 'f-date') {
+      var picker = document.getElementById('f-date-picker');
+      return picker ? (picker.getAttribute('data-formatted') || '') : '';
+    }
+    if (id === 'f-coach') {
+      var sel = document.getElementById('f-coach');
+      return sel ? sel.value : 'Karina';
+    }
+    var el = document.getElementById(id);
+    if (!el) return '';
+    var s = el.querySelector('span');
+    if (s) return '';
+    return el.textContent.trim();
+  }
+
+  var advisor = getField('f-advisor');
+  var date = getField('f-date');
+  var goals = document.getElementById('f-goals').value.trim();
+
+  var subject = 'ExpertLink Coaching Session Recap' + (advisor ? ' - Advisor Ext. ' + advisor : '') + (date ? ' - ' + date : '');
+
+  var lines = [];
+  lines.push('COACHING SESSION RECAP');
+  lines.push('Recap & Action Summary');
+  lines.push('');
+  lines.push('SESSION DETAILS');
+  lines.push('Coach: Karina');
+  if (advisor) lines.push('Advisor Ext.: ' + advisor);
+  if (date) lines.push('Session Date: ' + date);
+
+  var hasModules = false;
+  TOPICS.forEach(function(key) {
+    var mod = document.getElementById('mod-' + key);
+    if (mod.classList.contains('faded-mod')) return;
+    if (!hasModules) { lines.push(''); lines.push('RECAP & RECOMMENDATIONS'); hasModules = true; }
+    var titleEl = document.getElementById('hdr-text-' + key) || document.getElementById('hdr-' + key);
+    var title = titleEl.textContent.trim().replace('Manage tips','').trim();
+    var val = document.getElementById('recap-' + key).value.trim();
+    lines.push('');
+    lines.push('[ ' + title.toUpperCase() + ' ]');
+    if (val) lines.push(val);
+
+    // Add guide links as plain text
+    if (selectedGuides[key] && selectedGuides[key].length > 0) {
+      lines.push('');
+      lines.push('Guides:');
+      selectedGuides[key].forEach(function(g) {
+        lines.push('• ' + g.title);
+        lines.push('  ' + g.url);
+      });
+    }
+  });
+
+  if (goals) {
+    lines.push('');
+    lines.push('GOALS');
+    lines.push("Goal(s) We're Working Toward:");
+    lines.push(goals);
+  }
+
+  lines.push('');
+  lines.push('---');
+  lines.push('Questions? Reach out anytime at Karina@expert-link.com or send a ticket through the Portal.');
+  lines.push('Looking forward to our next session!');
+
+  var body = lines.join('\n');
+  var mailto = 'mailto:?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+  window.location.href = mailto;
+}
+
+function toggleCustom() {
+  var title = document.getElementById('custom-topic-title').value.trim();
+  if (!title) {
+    document.getElementById('custom-topic-title').focus();
+    return;
+  }
+  toggle('custom');
+  // Update module header with typed title
+  var hdrText = document.getElementById('hdr-text-custom');
+  if (hdrText) hdrText.textContent = title;
+}
+
+function updateCustomTitle(val) {
+  var hdrText = document.getElementById('hdr-text-custom');
+  if (hdrText) hdrText.textContent = val || 'Custom Topic';
+  TOPIC_NAMES['custom'] = val || 'Custom Topic';
+}
+
+</script>
+
+<!-- MANAGE TIPS MODAL -->
+<div id="tips-modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center;">
+  <div id="tips-modal" style="background:#fff; border-radius:6px; padding:24px; width:520px; max-width:95vw; max-height:80vh; overflow-y:auto; box-shadow:0 8px 32px rgba(0,0,0,0.25); position:relative;">
+    <button onclick="closeTipsModal()" style="position:absolute; top:12px; right:16px; background:none; border:none; font-size:22px; cursor:pointer; color:#888; line-height:1;">&#x2715;</button>
+    <h3 id="modal-title" style="color:#1E4E79; font-size:15px; margin-bottom:4px; font-family:Arial,sans-serif;">Manage Tips</h3>
+    <p style="color:#888; font-size:12px; margin-bottom:16px; font-family:Arial,sans-serif;">Add or remove tips for this topic. Changes apply immediately.</p>
+    <div id="modal-tips-list"></div>
+    <div style="display:flex; gap:8px; margin-top:14px;">
+      <input type="text" id="new-tip-input" placeholder="Type a new tip and click Add…"
+             onkeydown="if(event.key==='Enter')addNewTip()"
+             style="flex:1; border:1px solid #2E75B6; padding:7px 10px; font-size:13px; font-family:Arial,sans-serif; color:#333; outline:none;">
+      <button onclick="addNewTip()" style="background:#1E4E79; color:#fff; border:none; padding:7px 16px; font-size:13px; font-family:Arial,sans-serif; cursor:pointer; white-space:nowrap;">+ Add</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- MANAGE GUIDES MODAL -->
+<div id="guides-modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center;">
+  <div id="guides-modal" style="background:#fff; border-radius:6px; padding:24px; width:560px; max-width:95vw; max-height:80vh; overflow-y:auto; box-shadow:0 8px 32px rgba(0,0,0,0.25); position:relative;">
+    <button onclick="closeGuidesModal()" style="position:absolute; top:12px; right:16px; background:none; border:none; font-size:22px; cursor:pointer; color:#888; line-height:1;">&#x2715;</button>
+    <h3 id="guides-modal-title" style="color:#1E4E79; font-size:15px; margin-bottom:4px; font-family:Arial,sans-serif;">Manage Guides</h3>
+    <p style="color:#888; font-size:12px; margin-bottom:16px; font-family:Arial,sans-serif;">Add, edit, or remove guide links for this topic.</p>
+    <div id="modal-guides-list"></div>
+    <div style="margin-top:14px; font-family:Arial,sans-serif;">
+      <div style="font-size:12px; font-weight:bold; color:#444; margin-bottom:6px;">Add New Guide</div>
+      <div style="display:flex; flex-direction:column; gap:6px;">
+        <input type="text" id="new-guide-title" placeholder="Guide title (e.g. AMP Promotions Guide)"
+               style="border:1px solid #2E75B6; padding:7px 10px; font-size:13px; font-family:Arial,sans-serif; color:#333; outline:none;">
+        <input type="text" id="new-guide-url" placeholder="URL (e.g. https://...)"
+               style="border:1px solid #2E75B6; padding:7px 10px; font-size:13px; font-family:Arial,sans-serif; color:#333; outline:none;"
+               onkeydown="if(event.key==='Enter')addNewGuide()">
+        <button onclick="addNewGuide()" style="background:#1E4E79; color:#fff; border:none; padding:8px 16px; font-size:13px; font-family:Arial,sans-serif; cursor:pointer; align-self:flex-start;">+ Add Guide</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
